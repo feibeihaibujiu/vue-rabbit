@@ -45,7 +45,6 @@ const doLogin = () => {
             // 2. 跳转首页
             router.replace({ path: '/' })
         }
-        // return valid ? 
     })
 }
 </script>
