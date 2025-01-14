@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue';
+import { LoginAPI } from '@/apis/user';
+import 'element-plus/theme-chalk/el-message.css';
+import { useRouter } from 'vue-router';
 //表单校验 (用户名＋密码)
 // 1. 表单对象
 const userInfo = ref({
@@ -27,13 +30,21 @@ const rules = {
 }
 // 3.获取form实例做统一验证
 const formRef = ref(null)
+const router = useRouter()
 const doLogin = () => {
+    const { account, password } = userInfo.value
     //调用实例方法
-    formRef.value.validate( (valid) => {
+    formRef.value.validate(async (valid) => {
         //所有表单都通过校验 validate才为true
-         
+        if (valid) {
+            const res = await LoginAPI({ account, password })
+            // 1. 提示用户
+            ElMessage({ type: 'success', message: '登录成功' })
+            // 2. 跳转首页
+            router.replace({ path: '/' })
+        }
         // return valid ? 
-    } )
+    })
 }
 </script>
 
@@ -59,7 +70,8 @@ const doLogin = () => {
                 </nav>
                 <div class="account-box">
                     <div class="form">
-                        <el-form ref="formRef" label-position="right" :rules="rules" :model="userInfo" label-width="60px" status-icon>
+                        <el-form ref="formRef" label-position="right" :rules="rules" :model="userInfo"
+                            label-width="60px" status-icon>
                             <el-form-item prop="account" label="账户">
                                 <el-input v-model="userInfo.account" />
                             </el-form-item>
