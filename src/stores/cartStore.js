@@ -1,6 +1,7 @@
 //封装购物车方法
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { computed } from "vue";
 
 export const useCartStore = defineStore(
   "cart",
@@ -30,10 +31,17 @@ export const useCartStore = defineStore(
       const idx = cartList.value.findIndex((item) => skuId === item.skuId);
       cartList.value.splice(idx, 1);
     };
+    // 计算属性
+    // 1. 商品总数计算逻辑：商品列表中的所有商品 count 累加之和
+    const allCount = computed ( () => cartList.value.reduce((a,c) => a + c.count,0))
+    // 2. 商品总价钱计算逻辑：商品列表中的所有商品的 count * price 累加之和
+    const allPrice = computed ( () => cartList.value.reduce((a,c) => a + c.count * c.price,0))
     return {
       cartList,
       addCart,
-      delCart
+      delCart,
+      allCount,
+      allPrice
     };
   },
   {
