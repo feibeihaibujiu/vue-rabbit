@@ -33,15 +33,26 @@ export const useCartStore = defineStore(
     };
     // 计算属性
     // 1. 商品总数计算逻辑：商品列表中的所有商品 count 累加之和
-    const allCount = computed ( () => cartList.value.reduce((a,c) => a + c.count,0))
+    const allCount = computed(() =>
+      cartList.value.reduce((a, c) => a + c.count, 0)
+    );
     // 2. 商品总价钱计算逻辑：商品列表中的所有商品的 count * price 累加之和
-    const allPrice = computed ( () => cartList.value.reduce((a,c) => a + c.count * c.price,0))
+    const allPrice = computed(() =>
+      cartList.value.reduce((a, c) => a + c.count * c.price, 0)
+    );
+    // 单选功能
+    const singleCheck = (skuId, selected) => {
+      // 通过skuId找到要修改的那一项 然后把它的selected修改为传过来的selected
+      const item = cartList.value.find((item) => item.skuId === skuId);
+      item.selected = selected;
+    };
     return {
       cartList,
       addCart,
       delCart,
       allCount,
-      allPrice
+      allPrice,
+      singleCheck
     };
   },
   {

@@ -397,7 +397,8 @@ const addCart = () => {
 
 .btn {
   margin-top: 20px;
-
+  background: $xtxColor;
+  color: #fff;
 }
 
 .bread-container {
