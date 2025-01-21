@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { computed } from "vue";
 import { useUserStore } from "./user";
-import { insertCartAPI,findNewCartListAPI } from "@/apis/cart";
+import { insertCartAPI, findNewCartListAPI,delCartAPI } from "@/apis/cart";
 
 export const useCartStore = defineStore(
   "cart",
@@ -20,11 +20,10 @@ export const useCartStore = defineStore(
       // 已添加过 - count + 1
       // 没有添加过 - 直接push
       // 思路：通过匹配传递过来的商品对象中的skuId能不能在cartList中找到，找到了就是添加过
-      const { skuId, count } = goods
+      const { skuId, count } = goods;
       if (isLogin) {
-        await insertCartAPI({ skuId, count })
-        const res = await findNewCartListAPI()
-        cartList.value = res.result
+        await insertCartAPI({ skuId, count });
+        updateNewList()
       } else {
         const item = cartList.value.find((item) => goods.skuId === item.skuId);
         if (item) {
@@ -41,9 +40,22 @@ export const useCartStore = defineStore(
       // 思路：
       // 1. 找到要删除项的下标值 - splice
       // 2. 使用数组的过滤方法 - filter
-      const idx = cartList.value.findIndex((item) => skuId === item.skuId);
-      cartList.value.splice(idx, 1);
+      if (isLogin) {
+        await delCartAPI([skuId])
+        updateNewList()
+      } else {
+        const idx = cartList.value.findIndex((item) => skuId === item.skuId);
+        cartList.value.splice(idx, 1);
+      }
     };
+
+    //获取最新购物车列表action函数
+    const updateNewList = async () => {
+      const res = await findNewCartListAPI();
+      cartList.value = res.result;
+    }
+
+
     // 计算属性
     // 1. 商品总数计算逻辑：商品列表中的所有商品 count 累加之和
     const allCount = computed(() =>
