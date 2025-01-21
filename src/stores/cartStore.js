@@ -21,7 +21,7 @@ export const useCartStore = defineStore(
       // 没有添加过 - 直接push
       // 思路：通过匹配传递过来的商品对象中的skuId能不能在cartList中找到，找到了就是添加过
       const { skuId, count } = goods;
-      if (isLogin) {
+      if (isLogin.value) {
         await insertCartAPI({ skuId, count });
         updateNewList()
       } else {
@@ -40,7 +40,7 @@ export const useCartStore = defineStore(
       // 思路：
       // 1. 找到要删除项的下标值 - splice
       // 2. 使用数组的过滤方法 - filter
-      if (isLogin) {
+      if (isLogin.value) {
         await delCartAPI([skuId])
         updateNewList()
       } else {
@@ -100,12 +100,13 @@ export const useCartStore = defineStore(
         .reduce((a, c) => a + c.count * c.price, 0)
     );
     return {
-      cartList,
       addCart,
       delCart,
       singleCheck,
       clearCart,
       allCheck,
+      updateNewList,
+      cartList,
       allCount,
       allPrice,
       isAll,
