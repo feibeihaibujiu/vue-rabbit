@@ -55,6 +55,11 @@ export const useCartStore = defineStore(
       cartList.value = res.result;
     }
 
+    //清除购物车
+    const clearCart = () => {
+      cartList.value = []
+    }
+
 
     // 计算属性
     // 1. 商品总数计算逻辑：商品列表中的所有商品 count 累加之和
@@ -98,13 +103,14 @@ export const useCartStore = defineStore(
       cartList,
       addCart,
       delCart,
+      singleCheck,
+      clearCart,
+      allCheck,
       allCount,
       allPrice,
-      singleCheck,
       isAll,
-      allCheck,
       selectedCount,
-      selectedPrice,
+      selectedPrice
     };
   },
   {
